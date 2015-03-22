@@ -63,7 +63,7 @@ public class SyllableCounter {
                 if (!line.isEmpty() && !line.startsWith("#")) {
                     String[] fields = line.split("	");
                     if (fields.length != 2) {
-                        System.err.println("couldn't parse the exceptions "
+                        System.err.println("couldn't encode the exceptions "
                                 + "file. Didn't find 2 fields in one of the "
                                 + "lines.");
                     }

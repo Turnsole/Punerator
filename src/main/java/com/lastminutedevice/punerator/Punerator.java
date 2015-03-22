@@ -1,21 +1,20 @@
 package com.lastminutedevice.punerator;
 
-import eu.crydee.syllablecounter.SyllableCounter;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Punerator {
 
     public static List<String> getPuns(final PuneratorModel model, final String input) {
-        List<String> results = new ArrayList<>();
-        results.addAll(model.getSuperStrings(input));
+        List <String> superstrings = model.getSuperStrings(input);
+        List <String> results = new ArrayList<>();
 
-        // If there were no exact superstrings, break it down.
-        if (results.size() == 0) {
-            SyllableCounter counter = new SyllableCounter();
-            for(String syllable : counter.tokenize(input)) {
-                results.addAll(model.getSuperStrings(syllable));
+        for(String candidate : superstrings) {
+            String pun = Soundex.formatMatch(input, candidate);
+            if (pun != null) {
+                results.add(pun);
+            } else {
+                System.out.println("Could not find match for: " + candidate);
             }
         }
 

@@ -10,11 +10,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.opennlp</groupId>
-            <artifactId>opennlp-tools</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-        <dependency>
             <groupId>com.googlecode.concurrent-trees</groupId>
             <artifactId>concurrent-trees</artifactId>
             <version>2.4.0</version>

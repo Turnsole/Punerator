@@ -1,29 +1,48 @@
 package com.lastminutedevice.punerator;
 
 public class Soundex {
+    static char nullCharacter = '\u0000';
 
     /**
      * Encodes the input string in a modified American Soundex notation. It is modified from true Soundex
-     * in that it is not padded or truncated to meet the four-character standard, and the first character may or
-     * may not be encoded as specified by encodeStart.
+     * in that it is not padded or truncated to meet the four-character standard.
      *
      * @param input       a given English word
-     * @param encodeStart whether to encode the start character as per true Soundex notation or encode the whole string
      * @return a simplified pronunciation key
      */
-    public static String encode(String input, boolean encodeStart) {
-        input = input.toLowerCase();
+    public static String encode(String input) {
 
         StringBuilder builder = new StringBuilder();
-        if (input.length() > 0) {
-            builder.append(encodeStart ? Soundex.encodeChar(input.charAt(0)) : input.charAt(0));
-        }
-
-        if (input.length() > 1) {
-            Character newCharacter;
+        if (input != null && input.length() > 0) {
+            input = input.toLowerCase();
+            builder.append(input.charAt(0));
+            char newCharacter, previousCharacter = nullCharacter;
             for (int i = 1; i < input.length(); i++) {
                 newCharacter = encodeChar(input.charAt(i));
-                if (newCharacter != null && builder.charAt(builder.length() - 1) != newCharacter) { // again, char array?
+                if (newCharacter != nullCharacter && newCharacter != previousCharacter) {
+                    builder.append(newCharacter);
+                    previousCharacter = newCharacter;
+                }
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Encode the string without condensing repeated characters or encoding the first character.
+     *
+     * @param input
+     * @return
+     */
+    public static String encodeExpanded(String input) {
+        StringBuilder builder = new StringBuilder();
+        if (input != null && input.length() > 0) {
+            input = input.toLowerCase();
+            builder.append(input.charAt(0));
+            char newCharacter;
+            for (int i = 1; i < input.length(); i++) {
+                newCharacter = encodeChar(input.charAt(i));
+                if (newCharacter != nullCharacter) {
                     builder.append(newCharacter);
                 }
             }
@@ -41,7 +60,7 @@ public class Soundex {
     public static String findMatch(String input, String candidate) {
         for (int i = 0; i < candidate.length(); i++) {
             if (candidate.charAt(i) == input.charAt(0) || candidate.toLowerCase().charAt(i) == input.charAt(0)) {
-                int endIndex = i + findEndIndex(input, candidate.substring(i).toLowerCase());
+                int endIndex = i + findEndIndex(candidate.substring(i).toLowerCase(), encode(input));
                 if (endIndex > 0) {
                     String result = i > 0 ? candidate.substring(0, i) : "";
                     result += input.toUpperCase();
@@ -57,48 +76,37 @@ public class Soundex {
     }
 
     /**
-     * From here, we know that the first two characters match.
-     * We want the index of the last character of the match.
+     * Find the index of the last character of the match.
      * <p/>
      * Return 0 if there is no match.
      */
-    private static int findEndIndex(String substring, String superstring) {
-        int subIndex = 0;
-        int superIndex = 0;
-        Character subChar = null;
-        Character superChar = null;
-        Character prevMatchChar = null;
-
-        // Fuzzy-match the remaining substring to the superstring.
-        while (subIndex < substring.length()) {
-
-            // Skip sonorants in substring.
-            while (subIndex < substring.length() && (subChar == null || subChar == prevMatchChar)) {
-                subChar = encodeChar(substring.charAt(subIndex));
-                subIndex++;
+    private static int findEndIndex(String candidate, String pattern) {
+        int found = 0;
+        char previousMatch = nullCharacter;
+        for (int i = 0; i < candidate.length(); i++) {
+            if (found < pattern.length()) {
+                char test = (i == 0) ? candidate.charAt(0) : encodeChar(candidate.charAt(i));
+                // If test equals pattern, increment found.
+                if (test == pattern.charAt(found)) {
+                    found++;
+                    previousMatch = test;
+                }
+                // If test is a neither nonencoding or a repeat, the match has failed.
+                else if (test != nullCharacter && test != previousMatch) {
+                    break;
+                }
+            } else {
+                return i;
             }
-
-            // Skip sonorants in superstring.
-            while (superIndex < superstring.length() && (superChar == null || superChar == prevMatchChar)) {
-                superChar = encodeChar(superstring.charAt(superIndex));
-                superIndex++;
-            }
-
-            if (superChar != subChar) {
-                return 0;
-            }
-
-            prevMatchChar = superChar;
         }
-
-        return superIndex;
+        return 0;
     }
 
     /**
      * @param input a character to encode
      * @return the Soundex representation of that character
      */
-    private static Character encodeChar(char input) {
+    public static char encodeChar(char input) {
         // Much faster than regex and slightly faster than Set operations.
         // Since this can be called over a million times for even small dictionaries, speed matters most here.
         switch (input) {
@@ -134,7 +142,7 @@ public class Soundex {
                 return '6';
             // Skip resonants
             default:
-                return null;
+                return nullCharacter;
         }
     }
 }

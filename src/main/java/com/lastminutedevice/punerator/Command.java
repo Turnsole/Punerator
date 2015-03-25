@@ -9,7 +9,7 @@ public class Command {
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
         PuneratorModel model = new PuneratorModel();
-        model.trainFromFile("src/main/resources/short_word_list.txt");   // todo: gzip for distribution
+        model.trainFromFile("src/main/resources/word_list.txt");   // todo: gzip for distribution
         System.out.println(String.format("Trained on %s words in %d ms.", model.size(), System.currentTimeMillis() - startTime));
 
         for (String input : args) {

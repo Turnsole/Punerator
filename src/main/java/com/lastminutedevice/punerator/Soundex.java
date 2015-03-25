@@ -21,29 +21,11 @@ public class Soundex {
                 newCharacter = encodeChar(input.charAt(i));
                 if (newCharacter != nullCharacter && newCharacter != previousCharacter) {
                     builder.append(newCharacter);
-                    previousCharacter = newCharacter;
                 }
-            }
-        }
-        return builder.toString();
-    }
 
-    /**
-     * Encode the string without condensing repeated characters or encoding the first character.
-     *
-     * @param input
-     * @return
-     */
-    public static String encodeExpanded(String input) {
-        StringBuilder builder = new StringBuilder();
-        if (input != null && input.length() > 0) {
-            input = input.toLowerCase();
-            builder.append(input.charAt(0));
-            char newCharacter;
-            for (int i = 1; i < input.length(); i++) {
-                newCharacter = encodeChar(input.charAt(i));
-                if (newCharacter != nullCharacter) {
-                    builder.append(newCharacter);
+                // For purposes of this encoding, h and w do not cause a consonant to repeat.
+                if (newCharacter != 'h' && newCharacter != 'w') {
+                    previousCharacter = newCharacter;
                 }
             }
         }
@@ -61,7 +43,7 @@ public class Soundex {
         for (int i = 0; i < candidate.length(); i++) {
             if (candidate.charAt(i) == input.charAt(0) || candidate.toLowerCase().charAt(i) == input.charAt(0)) {
                 int endIndex = i + findEndIndex(candidate.substring(i).toLowerCase(), encode(input));
-                if (endIndex > 0) {
+                if (endIndex > i) {
                     String result = i > 0 ? candidate.substring(0, i) : "";
                     result += input.toUpperCase();
                     if (endIndex < candidate.length()) {

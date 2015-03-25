@@ -16,7 +16,7 @@ public class SoundexTest extends TestCase {
         HashMap <String, String> testWords = new HashMap<>();
         testWords.put("Preponderance", "p6153652");
         testWords.put("infinite", "i5153");
-        testWords.put("things*stuff", "t5231");
+        testWords.put("things*stuff", "t52231");
         testWords.put("a", "a");
         testWords.put("c", "c");
 

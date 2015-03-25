@@ -20,7 +20,6 @@ public class PuneratorModel {
             for (String line = br.readLine(); line != null && line.length() > 0; line = br.readLine()) {
                 wordList.add(index, line);
                 tree.put(Soundex.encode(line), index);
-                tree.put(Soundex.encodeExpanded(line), index);
                 index += 1;
             }
         } catch (IOException exception) {

@@ -1,5 +1,7 @@
 package com.lastminutedevice.punerator;
 
+import net.ricecode.similarity.DiceCoefficientStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,14 +14,16 @@ public class Punerator {
      * @param input an input token to generate suggestions for
      * @return list of strings, empty if no puns found
      */
-    public static List<String> getPuns(final PuneratorModel model, final String input) {
-        List<String> superstrings = model.getCandidates(input);
-        List<String> results = new ArrayList<>();
+    public static List<Candidate> getPuns(final PuneratorModel model, final String input) {
+        List<String> candidates = model.getCandidates(input);
 
-        for (String candidate : superstrings) {
+        List<Candidate> results = new ArrayList<>();
+        for (String candidate : candidates) {
             String pun = Soundex.findMatch(input.toLowerCase(), candidate);
             if (pun != null) {
-                results.add(String.format("%s (%s)", pun, candidate));
+                // TODO: implement a version of this strategy that takes character class (probably Soundex) into account.
+                double diceScore = DiceCoefficientStrategy.score(input, candidate);
+                results.add(new Candidate(candidate, pun, diceScore));
             }
         }
 

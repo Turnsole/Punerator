@@ -20,14 +20,19 @@ public class Command {
 
         long startTime = System.currentTimeMillis();
         PuneratorModel model = new PuneratorModel();
+
+        // Word list generated from material provided by: http://wordlist.aspell.net
         model.trainFromFile("src/main/resources/" + wordListSize + "_word_list.txt");   // todo: gzip for distribution
         System.out.println(String.format("Trained on %s words in %d ms.", model.size(), System.currentTimeMillis() - startTime));
 
-        for (String input : (List <String>) optionSet.nonOptionArguments()) {
-            List<String> results = Punerator.getPuns(model, input);
+        PunComparator punComparator = new PunComparator();
+        for (String input : (List<String>) optionSet.nonOptionArguments()) {
+            List<Candidate> results = Punerator.getPuns(model, input);
             System.out.println(String.format("Found: %s puns for %s.", results.size(), input));
-            for (String pun : results) {
-                System.out.println("\t" + pun);
+
+            results.sort(punComparator);
+            for (Candidate pun : results) {
+                System.out.println(String.format("\t%s (%s)", pun.getFormatted(), pun.getOriginal()));
             }
         }
     }

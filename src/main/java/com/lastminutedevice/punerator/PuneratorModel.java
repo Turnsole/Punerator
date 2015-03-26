@@ -13,6 +13,11 @@ public class PuneratorModel {
     private List<String> wordList = new ArrayList<>();
     private ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<>(new DefaultCharArrayNodeFactory());
 
+    /**
+     * Construct the search structures for finding pun candidates.
+     *
+     * @param pathToWordList the path to a file with each token on its own line
+     */
     public void trainFromFile(String pathToWordList) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(pathToWordList));
@@ -31,6 +36,9 @@ public class PuneratorModel {
     /**
      * getCandidates currently performs two searches since Soundex preserves the first character of a string
      * as a literal and encodes the rest as numbers. This leaves room for some improvement.
+     * <p/>
+     * TODO: Tokens which are Latin or Greek root words will have a lot of matches that aren't really puns,
+     * and so perhaps an exclusion strategy should prevent literal superstrings from being included for those words.
      *
      * @param input an input token to search for
      * @return all known tokens that are phonetically similar to the input token
@@ -61,8 +69,6 @@ public class PuneratorModel {
                     results.add(wordList.get(index));
                 }
             }
-
-            // TODO: capture internal matches on repeating classes (ie, jug -> 22).
         }
 
         return results;

@@ -15,8 +15,9 @@ To run on the word "pun":
 
 Run with multiple words: 
 
-    mvn exec:java "-Dexec.args=hatchet turtle"
+    mvn exec:java "-Dexec.args=beard turtle"
 
-Run with extra output, use ````--v````:
+Provide more suggestions (searches a larger dictionary), use ````--v````:
  
-    mvn exec:java "-Dexec.args=--v hatchet turtle
+    mvn exec:java "-Dexec.args=--v beard turtle"
+

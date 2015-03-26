@@ -7,7 +7,7 @@ public class Soundex {
      * Encodes the input string in a modified American Soundex notation. It is modified from true Soundex
      * in that it is not padded or truncated to meet the four-character standard.
      *
-     * @param input       a given English word
+     * @param input a given English word
      * @return a simplified pronunciation key
      */
     public static String encode(String input) {

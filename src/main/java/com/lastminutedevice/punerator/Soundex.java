@@ -60,7 +60,7 @@ public class Soundex {
     /**
      * Find the index of the last character of the match.
      * <p/>
-     * Return 0 if there is no match.
+     * @return the index of the last character of the match, or 0 if there is no match.
      */
     private static int findEndIndex(String candidate, String pattern) {
         int found = 0;

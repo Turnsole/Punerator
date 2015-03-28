@@ -30,12 +30,13 @@ public class Command {
             System.out.println("Unable to load dictionary file.");
         }
 
-        System.out.println(String.format("Trained on %s words in %d ms.", model.size(), System.currentTimeMillis() - startTime));
+        System.out.println(String.format("Trained on %s words in %dms.", model.size(), System.currentTimeMillis() - startTime));
 
         PunComparator punComparator = new PunComparator();
         for (String input : (List<String>) optionSet.nonOptionArguments()) {
+            startTime = System.currentTimeMillis();
             List<Candidate> results = Punerator.getPuns(model, input);
-            System.out.println(String.format("Found: %s puns for %s.", results.size(), input));
+            System.out.println(String.format("Found: %s puns for %s in %dms.", results.size(), input, System.currentTimeMillis() - startTime));
 
             results.sort(punComparator);
             for (Candidate pun : results) {

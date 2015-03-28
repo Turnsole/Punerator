@@ -14,7 +14,7 @@ public class SoundexTest extends TestCase {
     public void testEncode() {
 
         HashMap<String, String> testWords = new HashMap<>();
-        testWords.put("Preponderance", "p6153652");
+        testWords.put("Preponderance", "P6153652");
         testWords.put("infinite", "i5153");
         testWords.put("things*stuff", "t52231");
         testWords.put("a", "a");
@@ -33,5 +33,6 @@ public class SoundexTest extends TestCase {
         assertEquals("GOOSEling", Soundex.findMatch("goose", "gosling"));
         assertEquals("prePUNderance", Soundex.findMatch("pun", "preponderance"));
         assertEquals("liBEARDarian", Soundex.findMatch("beard", "libertarian"));
+        assertEquals("MALACHontented", Soundex.findMatch("malachi", "malcontented"));
     }
 }

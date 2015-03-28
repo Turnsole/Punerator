@@ -21,8 +21,10 @@ public class Punerator {
         for (String candidate : candidates) {
             String pun = Soundex.findMatch(input.toLowerCase(), candidate);
             if (pun != null) {
+                // TODO: experimentally determine what level of string similarity best provokes mirth.
                 // TODO: implement a version of this strategy that takes character class (probably Soundex) into account.
                 double diceScore = DiceCoefficientStrategy.score(input, candidate);
+
                 results.add(new Candidate(candidate, pun, diceScore));
             }
         }

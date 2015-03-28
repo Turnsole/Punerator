@@ -18,18 +18,18 @@ public class PuneratorModel {
      *
      * @param pathToWordList the path to a file with each token on its own line
      */
-    public void trainFromFile(String pathToWordList) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(pathToWordList));
-            int index = wordList.size();
-            for (String line = br.readLine(); line != null && line.length() > 0; line = br.readLine()) {
+    public void addWordsFromFile(String pathToWordList) throws IOException {
+        int index = wordList.size();
+        BufferedReader br = new BufferedReader(new FileReader(pathToWordList));
+        for (String line; (line = br.readLine()) != null; ) {
+            if (line.length() > 1) {
                 wordList.add(index, line);
-                tree.put(Soundex.encode(line), index);
+                // Soundex leaves the first character of a string unencoded. Since the model will later
+                // return candidates that match on substrings, the trie needs to be fully encoded.
+                String token = Soundex.encodeChar(line.charAt(0)) + Soundex.encode(line).substring(1);
+                tree.put(token, index);
                 index += 1;
             }
-        } catch (IOException exception) {
-            System.out.println("Unable to train due to IOException.");
-            exception.printStackTrace();
         }
     }
 
@@ -46,25 +46,12 @@ public class PuneratorModel {
     public List<String> getCandidates(String input) {
         List<String> results = new ArrayList<>();
         if (input != null && input.length() > 1) {
-            String encoded = Soundex.encode(input);
+            String token = Soundex.encodeChar(input.charAt(0)) + Soundex.encode(input).substring(1);
 
             // Get all known tokens which contain the exact first character, and similar substring.
             // Since Soundex notation only literally preserves the first character, this only captures
             // tokens that begin with the same start character.
-            for (int index : tree.getValuesForKeysContaining(encoded)) {
-                if (wordList.size() > index) {
-                    results.add(wordList.get(index));
-                }
-            }
-
-            // Get all known tokens which contain a phonetically similar substring, but do not begin with the
-            // same character.
-            String fullyEncodedInput = String.valueOf(Soundex.encodeChar(input.charAt(0)));
-            if (encoded.length() > 1) {
-                fullyEncodedInput += Soundex.encode(input).substring(1);
-            }
-
-            for (int index : tree.getValuesForKeysContaining(fullyEncodedInput)) {
+            for (int index : tree.getValuesForKeysContaining(token)) {
                 if (wordList.size() > index) {
                     results.add(wordList.get(index));
                 }

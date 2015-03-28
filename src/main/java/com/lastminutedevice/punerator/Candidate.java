@@ -23,24 +23,12 @@ public class Candidate {
         return original;
     }
 
-    public void setOriginal(String original) {
-        this.original = original;
-    }
-
     public String getFormatted() {
         return formatted;
     }
 
-    public void setFormatted(String formatted) {
-        this.formatted = formatted;
-    }
-
     public double getScore() {
         return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
     }
 
     @Override

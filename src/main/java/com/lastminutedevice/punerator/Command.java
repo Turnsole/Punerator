@@ -5,12 +5,14 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 
 import java.util.List;
+import java.io.IOException;
 
 /**
  * CLI for com.lastminutedevice.punerator.Punerator
  */
 public class Command {
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         OptionParser optionParser = new OptionParser();
         OptionSpec<Void> verbose = optionParser.accepts("v");
@@ -21,8 +23,13 @@ public class Command {
         long startTime = System.currentTimeMillis();
         PuneratorModel model = new PuneratorModel();
 
-        // Word list generated from material provided by: http://wordlist.aspell.net
-        model.trainFromFile("src/main/resources/" + wordListSize + "_word_list.txt");   // todo: gzip for distribution
+        try {
+            // Word list generated from material provided by: http://wordlist.aspell.net
+            model.addWordsFromFile("src/main/resources/" + wordListSize + "_word_list.txt");   // todo: gzip for distribution
+        } catch (IOException exception) {
+            System.out.println("Unable to load dictionary file.");
+        }
+
         System.out.println(String.format("Trained on %s words in %d ms.", model.size(), System.currentTimeMillis() - startTime));
 
         PunComparator punComparator = new PunComparator();

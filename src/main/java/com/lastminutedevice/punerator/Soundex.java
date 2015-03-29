@@ -1,5 +1,9 @@
 package com.lastminutedevice.punerator;
 
+/**
+ * Static methods for encoding or presenting tokens in American Soundex notation.
+ * http://www.archives.gov/research/census/soundex.html
+ */
 public class Soundex {
     static char[] vowels = {'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'};
     static char nullCharacter = '\u0000';

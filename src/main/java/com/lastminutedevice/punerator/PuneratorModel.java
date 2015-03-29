@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Search structure for retrieving pun suggestions.
+ */
 public class PuneratorModel {
     private List<String> wordList = new ArrayList<>();
     private ConcurrentSuffixTree<Integer> tree = new ConcurrentSuffixTree<>(new DefaultCharArrayNodeFactory());
@@ -17,6 +20,7 @@ public class PuneratorModel {
      * Construct the search structures for finding pun candidates.
      *
      * @param pathToWordList the path to a file with each token on its own line
+     * @throws IOException if the given path is to an invalid text file
      */
     public void addWordsFromFile(String pathToWordList) throws IOException {
         int index = wordList.size();
@@ -34,9 +38,7 @@ public class PuneratorModel {
     }
 
     /**
-     * getCandidates currently performs two searches since Soundex preserves the first character of a string
-     * as a literal and encodes the rest as numbers. This leaves room for some improvement.
-     * <p/>
+     * Get a list of potential pun matches for a given token.
      * TODO: Tokens which are Latin or Greek root words will have a lot of matches that aren't really puns,
      * and so perhaps an exclusion strategy should prevent literal superstrings from being included for those words.
      *
@@ -48,9 +50,6 @@ public class PuneratorModel {
         if (input != null && input.length() > 1) {
             String token = Soundex.encodeChar(input.charAt(0)) + Soundex.encode(input).substring(1);
 
-            // Get all known tokens which contain the exact first character, and similar substring.
-            // Since Soundex notation only literally preserves the first character, this only captures
-            // tokens that begin with the same start character.
             for (int index : tree.getValuesForKeysContaining(token)) {
                 if (wordList.size() > index) {
                     results.add(wordList.get(index));

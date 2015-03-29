@@ -1,5 +1,8 @@
 package com.lastminutedevice.punerator;
 
+/**
+ * Represents a pun candidate.
+ */
 public class Candidate {
     private String original;
     private String formatted;
@@ -10,7 +13,7 @@ public class Candidate {
      * representing how good the pun is (by what measure depends on implementation).
      *
      * @param original  the form of the candidate as found in a dictionary
-     * @param formatted the matched substring capitalized to make the pun more obvioius
+     * @param formatted the matched substring capitalized to make the pun more obvious
      * @param score     a score representing how good a pun is expected to be of whatever the input word was
      */
     public Candidate(String original, String formatted, double score) {

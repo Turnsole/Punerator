@@ -8,7 +8,7 @@ import java.util.List;
 import java.io.IOException;
 
 /**
- * CLI for com.lastminutedevice.punerator.Punerator
+ * CLI for Punerator
  */
 public class Command {
 
